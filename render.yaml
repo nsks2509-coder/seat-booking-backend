@@ -1,11 +1,10 @@
-# Review the planned Render resources before applying them.
-# This deploys the API with private PostgreSQL and Key Value networking.
+# Free portfolio preview; Render free Postgres expires after 30 days.
 services:
   - type: web
     name: seat-booking-api
     runtime: docker
     region: singapore
-    plan: 0.5c-512mb
+    plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /actuator/health
     envVars:
@@ -33,15 +32,15 @@ services:
   - type: keyvalue
     name: seat-booking-cache
     region: singapore
-    plan: 256mb
+    plan: free
     ipAllowList: []
-    maxmemoryPolicy: allkeys-lru
-    persistenceMode: journal-snapshot
+    maxmemoryPolicy: noeviction
+    persistenceMode: off
 
 databases:
   - name: seat-booking-db
     region: singapore
-    plan: 0.1c-256mb
+    plan: free
     databaseName: seatbooking
     user: seatbooking
     ipAllowList: []

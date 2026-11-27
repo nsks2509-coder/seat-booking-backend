@@ -1,0 +1,47 @@
+# Review the planned Render resources before applying them.
+# This deploys the API with private PostgreSQL and Key Value networking.
+services:
+  - type: web
+    name: seat-booking-api
+    runtime: docker
+    region: singapore
+    plan: 0.5c-512mb
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: seat-booking-db
+          property: connectionString
+      - key: REDIS_HOST
+        fromService:
+          type: keyvalue
+          name: seat-booking-cache
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: keyvalue
+          name: seat-booking-cache
+          property: port
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: portfolio-admin
+      - key: ADMIN_PASSWORD
+        generateValue: true
+
+  - type: keyvalue
+    name: seat-booking-cache
+    region: singapore
+    plan: 256mb
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
+    persistenceMode: journal-snapshot
+
+databases:
+  - name: seat-booking-db
+    region: singapore
+    plan: 0.1c-256mb
+    databaseName: seatbooking
+    user: seatbooking
+    ipAllowList: []

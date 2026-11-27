@@ -1,0 +1,61 @@
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+spring:
+  application:
+    name: seat-booking-backend
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/booking}
+    username: ${DATABASE_USERNAME:booking}
+    password: ${DATABASE_PASSWORD:booking}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:20}
+      connection-timeout: 3000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        order_inserts: true
+        order_updates: true
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2s
+  cache:
+    type: redis
+  jackson:
+    default-property-inclusion: non_null
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+app:
+  security:
+    jwt-secret: ${JWT_SECRET:local-dev-secret-change-this-to-at-least-32-bytes}
+    token-ttl: ${JWT_TOKEN_TTL:PT30M}
+  booking:
+    hold-ttl: ${HOLD_TTL:PT10M}
+    rate-limit:
+      window: ${RATE_LIMIT_WINDOW:PT1M}
+      holds-per-window: ${RATE_LIMIT_HOLDS:20}
+      bookings-per-window: ${RATE_LIMIT_BOOKINGS:10}
+  bootstrap:
+    admin:
+      username: ${ADMIN_USERNAME:}
+      password: ${ADMIN_PASSWORD:}
+logging:
+  level:
+    org.hibernate.SQL: WARN

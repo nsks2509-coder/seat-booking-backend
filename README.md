@@ -123,4 +123,3 @@ This is a backend portfolio project, not a ready-made ticketing platform. It has
 ## License
 
 MIT. See [LICENSE](LICENSE).
-

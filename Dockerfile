@@ -10,6 +10,7 @@ RUN useradd --system --uid 10001 --create-home bookingapp
 WORKDIR /app
 COPY --from=build /workspace/target/seat-booking-backend-0.1.0.jar /app/app.jar
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod 0555 /app/docker-entrypoint.sh
 USER 10001
 EXPOSE 8080
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
